@@ -348,14 +348,19 @@ public Action Menu_StateHandler(Handle timer, Handle hndl)
 				
 				//Randomly decide which captain picks first (0 = stay as it is, 1 = swap captains)
 				if(GetRandomInt(0,1) == 1)
-				{				 
+				{	
+					PrintToChatAll("\x04Second captain won the coin flip");				
 					char buff[MAX_STR_LEN];
 					strcopy(buff, MAX_STR_LEN, survCaptainAuthId);
 					strcopy(survCaptainAuthId, MAX_STR_LEN, infCaptainAuthId);
 					strcopy(infCaptainAuthId, MAX_STR_LEN, buff);
 
-					ChangeClientTeamEx(GetClientFromAuthId(infCaptainAuthId), L4D2Team_Survivor);
-					ChangeClientTeamEx(GetClientFromAuthId(buff), L4D2Team_Infected);					
+					ChangeClientTeamEx(GetClientFromAuthId(survCaptainAuthId), L4D2Team_Survivor);
+					ChangeClientTeamEx(GetClientFromAuthId(infCaptainAuthId), L4D2Team_Infected);					
+				}
+				else
+				{	
+					PrintToChatAll("\x04First captain won the coin flip");				
 				}
 				
                 CreateTimer(0.5, Menu_StateHandler); 
