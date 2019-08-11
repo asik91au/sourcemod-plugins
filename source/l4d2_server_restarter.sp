@@ -1,9 +1,11 @@
 #include <sourcemod>
 
+
 new bool:isFirstMapStart = true;
 new bool:isSwitchingMaps = true;
 new bool:startedTimer = false;
 new Handle:switchMapTimer = INVALID_HANDLE;
+new ConVar:cvarRestartSignalGuid;
  
 public Plugin myinfo =
 {
@@ -16,6 +18,7 @@ public Plugin myinfo =
 
 public void OnPluginStart()
 {
+    cvarRestartSignalGuid = CreateConVar("sm_restart_signal_guid","0");
     new ConVar:cvarHibernateWhenEmpty = FindConVar("sv_hibernate_when_empty");
     SetConVarInt(cvarHibernateWhenEmpty, 0, false, false);
     
@@ -35,7 +38,7 @@ public Action KickClientsAndRestartServer(int client, int args)
         }
     }
 
-    CrashServer();
+    RestartServer();
 }
 
 public void OnMapStart()
@@ -71,7 +74,7 @@ public Action SwitchedMap(Handle timer)
 public Action CrashIfNoHumans(Handle timer) 
 {
     if (!isSwitchingMaps && !HumanFound()) {
-        CrashServer();
+        RestartServer();
     }
 
     return Plugin_Continue;
@@ -93,6 +96,26 @@ public bool HumanFound()
 public bool IsHuman(client)
 {
     return IsClientInGame(client) && !IsFakeClient(client);
+}
+
+public void RestartServer()
+{
+	decl String:guid[256];
+	GetConVarString(cvarRestartSignalGuid, guid, sizeof(guid));
+	if(StrEqual(guid,"0"))
+	{
+		CrashServer();
+	}
+	else
+	{
+		SignalRestart(guid);
+	}
+}
+
+public void SignalRestart(String:guid[])
+{
+	PrintToServer("L4D2 Server Restarter: Signalling server restart...");
+	PrintToServer("EXEC%s",guid);
 }
 
 public void CrashServer()
