@@ -18,7 +18,7 @@ public Plugin myinfo =
 
 public void OnPluginStart()
 {
-    cvarRestartSignalGuid = CreateConVar("sm_restart_signal_guid","0");
+    cvarRestartSignalGuid = CreateConVar("sm_restart_signal_guid","0","",FCVAR_PROTECTED);
     new ConVar:cvarHibernateWhenEmpty = FindConVar("sv_hibernate_when_empty");
     SetConVarInt(cvarHibernateWhenEmpty, 0, false, false);
     
